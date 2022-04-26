@@ -6,7 +6,6 @@ system("clear") || system("cls")
 day_array = grab_diary('dagbok.txt')
 
 def print_alternatives(day_array)
-    puts "\n\nVälj en dag: "
     day_array.each do |day|
         puts day[0]
     end
@@ -30,26 +29,29 @@ def sort_days(day_array)
     return output_list
 end 
 
-def find_day(day_array, day_choice)
-    start = 0 
-    finish = day_array.length
-    while true 
-        middle_i = (start + ((finish - start)/2.0)).floor
-        if day_array[middle_i][0] == day_choice
-            return middle_i 
-        elsif start == finish
-            if day_array[start][0] == day_choice
-                return middle_i
-            else 
-                return nil
-            end 
-        elsif day_array[middle_i][0] < day_choice
-            start = middle_i
-        elsif day_array[middle_i][0] > day_choice
-            finish = middle_i
-        end 
-    end 
-end 
+def find_day(arr, target)
+    left    = 0
+    right   = arr.length - 1
+
+    while left <= right do
+        # start by finding the middle element between left and right
+        middle = ( (right - left) / 2 ) + left
+
+        # check if we find target
+        if arr[middle][0] == target
+            return middle
+        end
+
+        # change working area
+        if arr[middle][0] < target
+            left = middle + 1
+        else
+            right = middle - 1
+        end
+    end
+    return nil
+end
+
 
 def day_unique(day_array, day_choice)
     day_array.each do |unique|
@@ -62,21 +64,85 @@ end
 
 def handle_day(action, day_array)
     if action == 0
-        print_alternatives(day_array)
-        day_choice = gets().chomp
+        system("clear") || system("cls")
+        day = ""
+        loop do
+            puts "Vilket datum vill du öppna? Skriv 'visa' för att visa alla sparade datum."
+            day = gets().chomp
+            if day.downcase != "visa" then
+                break;
+            end
+            system("clear") || system("cls")
+            puts "Valbara datum:"
+            print_alternatives(day_array)
+            puts "" # blank line
+        end
         system("clear") || system("cls") 
-        if find_day(day_array, day_choice) == nil 
-            raise "datumet finns ej"
-        else 
-            system("clear") || system("cls") 
-            puts "Innehållet:"
-            puts day_array[find_day(day_array, day_choice)]
-            puts ""
-        end 
+        puts "Innehållet:"
+        puts day_array[find_day(day_array, day)]
+        puts ""
     elsif action == 1
         #ska kunna skrolla, skriva in var som helst - text editor, offset 
-    elsif action == 2 
-        system("clear") || system("cls") 
+        system("clear") || system("cls")
+        day = ""
+        loop do
+            puts "Vilket datum vill du redigera? Skriv 'visa' för att visa alla sparade datum."
+            day = gets().chomp
+            if day.downcase != "visa" then
+                break;
+            end
+            system("clear") || system("cls")
+            puts "Valbara datum:"
+            print_alternatives(day_array)
+            puts "" # blank line
+        end
+
+        # Validation and parsing
+        begin  # "try" block
+            day = Date.strptime(day, '%Y-%m-%d').strftime('%Y-%m-%d')
+        rescue # optionally: `rescue Exception => ex`
+            puts 'Vänligen tänk över din formattering och testa igen: yyyy-mm-dd'
+            puts '' # blank line
+            return
+        end 
+
+        # Create file with contents from day #{day}
+        day_idx = find_day(day_array, day)
+        if day_idx == nil
+            system("clear") || system("cls")
+            puts "Datum '#{day}' finns ej, vänligen försök igen"
+            puts '' # blank space
+            return
+        end
+        contents = day_array[day_idx][1]
+        File.write(day, contents)
+
+        # Inform the user
+        puts "Din textredigerare kommer att öppna vald dag, spara och stäng dokumentet för att fortsätta"
+
+        # Start the text editor and promt to continue
+        if !system("cmd /c 'start #{day}'", :err => File::NULL, :out => File::NULL) # Windows
+            if !system("xdg-open '#{day}'", :err => File::NULL, :out => File::NULL) # Linux
+                system("open '#{day}'", :err => File::NULL, :out => File::NULL) # Mac OSX, för er skull sir Widebrant ;)
+            end
+        end
+        puts '' # blank line
+        loop do
+            puts "Färdig? [J/n]"
+            if gets().chomp.downcase == 'j'
+                break
+            end
+        end
+
+        # Get the new content and save it to the main file
+        new_contents = File.read(day)
+        day_array[day_idx][1] = new_contents
+        save_changes(day_array, "dagbok.txt")
+        system("clear") || system("cls")
+        puts "Filen är nu sparad!"
+        puts '' # blank space
+        File.delete(day) if File.exist?(day) # also remove the temporary file
+    elsif action == 2
         puts "datum?"
         day = gets().chomp 
         begin  # "try" block
