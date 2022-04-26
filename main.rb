@@ -1,7 +1,8 @@
 require_relative('file_management.rb')
 require 'date'
 
-#lägg till raise 
+system("clear") || system("cls") 
+
 day_array = grab_diary('dagbok.txt')
 
 def print_alternatives(day_array)
@@ -50,36 +51,67 @@ def find_day(day_array, day_choice)
     end 
 end 
 
+def day_unique(day_array, day_choice)
+    day_array.each do |unique|
+        if unique[0].chomp == day_choice
+            return false
+        end 
+    end 
+    return true 
+end
+
 def handle_day(action, day_array)
     if action == 0
         print_alternatives(day_array)
         day_choice = gets().chomp
-        puts day_array[find_day(day_array, day_choice)]
+        system("clear") || system("cls") 
+        if find_day(day_array, day_choice) == nil 
+            raise "datumet finns ej"
+        else 
+            system("clear") || system("cls") 
+            puts "Innehållet:"
+            puts day_array[find_day(day_array, day_choice)]
+            puts ""
+        end 
     elsif action == 1
         #ska kunna skrolla, skriva in var som helst - text editor, offset 
-    elsif action == 2
+    elsif action == 2 
+        system("clear") || system("cls") 
         puts "datum?"
         day = gets().chomp 
         begin  # "try" block
-            Date.strptime(day, '%Y-%m-%d')
-            puts "It worked"
-        rescue # optionally: `rescue Exception => ex`
-            puts 'I am rescued.'
+            date = Date.strptime(day, '%Y-%m-%d')
+            day = date.strftime('%Y-%m-%d')
+            if day_unique(day_array, day)
+                system("clear") || system("cls") 
+                puts "innehåll?"
+                content = gets().chomp
+                entry = [day] + [content]
+                day_array << entry
+                day_array = sort_days(day_array)
+                save_changes(day_array, 'dagbok.txt')
+                system("clear") || system("cls") 
+                puts "tillagt!"
+                puts ""
+            end 
+        rescue StandardError => e 
+            puts 'I am rescued'
+            puts e.inspect
         end 
-        puts "innehåll?"
-        content = gets().chomp
-        entry = [day] + [content]
-        day_array << entry
-        day_array = sort_days(day_array)
-        save_changes(day_array, 'dagbok.txt')
-        puts "added!"
         return day_array
-    elsif action == 3
+    elsif action == 3 
         print_alternatives(day_array)
         day_choice = gets().chomp
-        day_array.delete_at(find_day(day_array, day_choice))
-        save_changes(day_array, 'dagbok.txt')
-        return day_array
+        system("clear") || system("cls") 
+        if find_day(day_array, day_choice) == nil 
+            puts "datumet finns ej"
+        else 
+            day_array.delete_at(find_day(day_array, day_choice))
+            save_changes(day_array, 'dagbok.txt')
+            puts "borttaget!"
+            puts ""
+            return day_array
+        end 
     end 
 end
 
