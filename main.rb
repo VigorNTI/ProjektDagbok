@@ -1,4 +1,5 @@
 require_relative('file_management.rb')
+require 'date'
 
 #lägg till raise 
 day_array = grab_diary('dagbok.txt')
@@ -59,6 +60,12 @@ def handle_day(action, day_array)
     elsif action == 2
         puts "datum?"
         day = gets().chomp 
+        begin  # "try" block
+            Date.strptime(day, '%Y-%m-%d')
+            puts "It worked"
+        rescue # optionally: `rescue Exception => ex`
+            puts 'I am rescued.'
+        end 
         puts "innehåll?"
         content = gets().chomp
         entry = [day] + [content]
