@@ -14,7 +14,6 @@ def print_alternatives(day_array)
     end
 end 
 
-#selection sort
 def sort_days(day_array)
     day_array = day_array.dup
     output_list = []
@@ -55,7 +54,6 @@ def find_day(arr, target)
     return nil
 end
 
-#kollar om varje dag är unik genom att jämföra alla datum med tidigare 
 def day_unique(day_array, day_choice)
     day_array.each do |unique|
         if unique[0].chomp == day_choice
@@ -129,7 +127,7 @@ def handle_day(action, day_array)
                 system("open '#{day}'", :err => File::NULL, :out => File::NULL) # Mac OSX, för er skull sir Widebrant ;)
             end
         end
-        puts '' # blank line
+        puts '' 
         loop do
             puts "Färdig? [j/n]"
             if gets().chomp.downcase == 'j'
