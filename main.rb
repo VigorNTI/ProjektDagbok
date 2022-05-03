@@ -3,11 +3,9 @@ require 'date'
 
 system("clear") || system("cls") 
 
-#variablar som anropar funktionerna i filhanteraren 
 day_array = grab_diary('dagbok.txt')
 password = grab_password('password.txt')
 
-#skriver ut alla alternativ för datum 
 def print_alternatives(day_array)
     day_array.each do |day|
         puts day[0]
@@ -32,7 +30,47 @@ def sort_days(day_array)
     return output_list
 end 
 
-#binary search 
+# Beskrivning:  Funktion som går igenom en lista och letar efter ett visst element i listan.
+#               Funktionen returnerar nil ifall elementet inte finns.
+#               Funktionen tar ej hänsyn till datatyper.
+# Argument 1:   Array - två dimensionell lista med tal, antingen integers, floats och/eller andra datatyper som kan rangordnas.
+#               Listan skall vara sorterad baserat på första elementet av varje lista i listan.
+# Argument 2:   Integer/Float - elementet som letas efter, funktionen kommer att matcha detta element mot första elementet i varje lista.
+#               Dvs att funktionen kommer att matcha argument 2 mot argument_1[i][0], se exempel nedan
+# Return:       Integer/nil - index där talet är eller nil om talet ej finns med
+# Exempel:      
+#               find_day([
+#                            ["2014-01-03", "Hej på digahwd"],
+#                            ["2016-05-09", "dear diary..."],
+#                            ["2017-01-01", "programmeringsprojekt "],
+#                            ["2020-04-08", "kartoffel"],
+#                            ["2020-10-05", "123123123123"],
+#                            ["2022-01-09", "eisfu"],
+#                            ["2022-02-15", "riowi3w"]
+#                        ], "2016-05-09") #=> 1
+#               
+#               find_day([
+#                            ["2014-01-03", "Hej på digahwd"],
+#                            ["2016-05-09", "dear diary..."],
+#                            ["2017-01-01", "programmeringsprojekt "],
+#                            ["2020-04-08", "kartoffel"],
+#                            ["2020-10-05", "123123123123"],
+#                            ["2022-01-09", "eisfu"],
+#                            ["2022-02-15", "riowi3w"]
+#                        ], "2016-05-08") #=> nil
+#
+#               find_day([
+#                            ["2014-01-03", "Hej på digahwd"],
+#                            ["2016-05-09", "dear diary..."],
+#                            ["2017-01-01", "programmeringsprojekt "],
+#                            ["2020-04-08", "kartoffel"],
+#                            ["2020-10-05", "123123123123"],
+#                            ["2022-01-09", "eisfu"],
+#                            ["2022-02-15", "riowi3w"]
+#                        ], 4) #=> nil
+#
+# By:           Vigor Turujlija Gamelius och Frida Wallstrom
+# Date:         2022-05-03
 def find_day(arr, target)
     left = 0
     right = arr.length - 1
@@ -63,7 +101,6 @@ def day_unique(day_array, day_choice)
     return true 
 end
 
-#hanterar alla alternativ och funktionen i dagboken, om inloggad
 def handle_day(action, day_array)
     if action == 0
         system("clear") || system("cls")
@@ -190,7 +227,6 @@ def handle_day(action, day_array)
     end 
 end
 
-#krypterar dagboken
 def encrypt_text(text)
     encrypted_text = []
     text.chars.each do |c|
@@ -207,7 +243,6 @@ def encrypt_text(text)
     return encrypted_text
 end 
 
-#hanterar den krypterade dagboken  
 def crypted_handle_day(action, day_array)
     if action == 0
         day = ""
