@@ -12,7 +12,7 @@
 #             så returneras detta: 
 #             [["2014-01-03", "Hej på digahwd"], ["2016-05-09", "dear diary..."]]
 #By:          Frida Wallström och Vigor Turujlija Gamelius
-#Date:        03-05-2022
+#Date:        2022-05-03
 
 def grab_diary(file_name)
     file_content = File.read(file_name)
@@ -39,8 +39,4 @@ end
 
 def grab_password(file_name)
     file_content = File.read(file_name)
-end 
-
-def save_password(file_name)
-    File.write(file_name, content)
 end 

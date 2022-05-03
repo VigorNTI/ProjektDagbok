@@ -269,7 +269,7 @@ def crypted_handle_day(action, day_array)
     end 
 end 
 
-#huvuddelen - loop som kör hela programmet 
+#huvuddel - loop som kör hela programmet 
 puts "Logga in? [j/n]"
 login_answer = gets().chomp.downcase
 if login_answer == "j"
